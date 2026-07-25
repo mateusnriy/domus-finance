@@ -47,7 +47,7 @@ flowchart LR
     S --> DB[("PostgreSQL")]
 ```
 
-1. **Tratamento de erros** primeiro, para capturar exceções de qualquer etapa posterior.
+1. **Tratamento de erros** primeiro, para capturar exceções de qualquer ponto posterior do pipeline.
 2. **CORS** antes da autenticação, para que a requisição de verificação prévia não seja rejeitada por ausência de token.
 3. **Autenticação** valida o token e monta a identidade.
 4. **Autorização** aplica as exigências de acesso.

@@ -4,10 +4,6 @@ Sistema de controle de gastos residenciais. API REST para cadastro de pessoas,
 registro de suas transações financeiras (receitas e despesas) e consolidação de
 totais, com acesso autenticado.
 
-> **Status:** em desenvolvimento. Esta é a etapa de fundação — estrutura da
-> solução, projetos e infraestrutura de banco. As funcionalidades de negócio são
-> adicionadas nas etapas seguintes.
-
 ## Stack
 
 - **Backend:** .NET 8 (ASP.NET Core Web API), C#
