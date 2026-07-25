@@ -28,11 +28,15 @@ Isolamento de dados por usuário (multi-tenancy) está fora do escopo atual. Jus
 | RF01 | Cadastrar pessoa | Criar pessoa com nome e idade; o sistema gera o identificador |
 | RF02 | Listar pessoas | Exibir todas as pessoas, com a quantidade de transações de cada uma |
 | RF03 | Excluir pessoa | Remover pessoa e, em cascata, todas as suas transações |
-| RF04 | Cadastrar transação | Criar transação respeitando as regras de negócio |
+| RF18 | Editar pessoa | Alterar nome e idade de uma pessoa já cadastrada |
+| RF04 | Cadastrar transação | Criar transação com data e categoria opcional, respeitando as regras de negócio |
 | RF05 | Listar transações | Exibir transações com os dados da pessoa associada |
+| RF19 | Editar transação | Alterar os dados de uma transação; a pessoa vinculada não muda |
+| RF20 | Excluir transação | Remover uma transação individual |
 | RF06 | Consultar totais por pessoa | Total de receitas, despesas e saldo de cada pessoa |
 | RF07 | Consultar total geral | Consolidado de receitas, despesas e saldo líquido |
-| RF08 | Filtrar transações | Filtrar a listagem por pessoa e por tipo |
+| RF23 | Resumo de despesas por categoria | Total de despesas agrupado por categoria, no consolidado |
+| RF08 | Filtrar transações | Filtrar a listagem por pessoa, tipo, categoria e período |
 
 ### 3.2. Controle de acesso
 
@@ -88,6 +92,11 @@ Isolamento de dados por usuário (multi-tenancy) está fora do escopo atual. Jus
 | RN08 | O total geral é a soma dos totais de todas as pessoas |
 | RN09 | Nome é obrigatório, com até 150 caracteres; idade é inteira entre 0 e 130 |
 | RN10 | Descrição é obrigatória, com até 200 caracteres; valores têm 2 casas decimais |
+| RN17 | A listagem de pessoas traz a quantidade de transações de cada uma |
+| RN18 | A data da transação é obrigatória e não pode ser futura; o padrão é a data de hoje |
+| RN19 | A categoria é opcional e, quando informada, pertence a um domínio fechado |
+| RN20 | Editar uma transação revalida todas as regras aplicáveis à criação |
+| RN21 | A maioridade é avaliada no momento do registro; editar a idade não invalida o histórico |
 
 ### 5.2. Controle de acesso
 

@@ -140,8 +140,8 @@ flowchart LR
 **Pré-condição:** existe ao menos uma pessoa cadastrada
 
 **Fluxo principal**
-1. O usuário informa descrição, valor, tipo e pessoa.
-2. O sistema valida os campos.
+1. O usuário informa descrição, valor, tipo, data, pessoa e, opcionalmente, categoria.
+2. O sistema valida os campos, incluindo data não futura (RN18) e categoria dentro do domínio (RN19).
 3. O sistema verifica se a pessoa existe (RN02).
 4. O sistema verifica a regra de maioridade (RN03).
 5. O sistema persiste e retorna a transação criada.
@@ -150,6 +150,7 @@ flowchart LR
 - Pessoa inexistente: recurso não encontrado.
 - Pessoa menor de idade registrando receita: regra de negócio violada.
 - Valor inválido ou campo obrigatório ausente: erro de validação.
+- Data futura ou categoria fora do domínio: erro de validação.
 
 **Precedência:** a existência da pessoa é verificada antes da regra de maioridade.
 

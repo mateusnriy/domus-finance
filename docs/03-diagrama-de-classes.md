@@ -20,6 +20,7 @@ classDiagram
         +DateTime CriadoEm
         +ICollection~Transacao~ Transacoes
         +bool EhMenorDeIdade()
+        +void Atualizar()
     }
 
     class Transacao {
@@ -27,9 +28,12 @@ classDiagram
         +string Descricao
         +decimal Valor
         +TipoTransacao Tipo
+        +DateOnly Data
+        +CategoriaTransacao? Categoria
         +Guid PessoaId
         +Pessoa Pessoa
         +DateTime CriadoEm
+        +void Atualizar()
     }
 
     class TipoTransacao {
@@ -38,8 +42,21 @@ classDiagram
         Receita
     }
 
+    class CategoriaTransacao {
+        <<enumeration>>
+        Moradia
+        Alimentacao
+        Transporte
+        Saude
+        Educacao
+        Lazer
+        Contas
+        Outros
+    }
+
     Pessoa "1" --> "0..*" Transacao : possui
     Transacao --> TipoTransacao : classifica
+    Transacao --> CategoriaTransacao : categoriza
 
     note for Usuario "Sem relacionamento com Pessoa.<br/>Usuário opera o sistema;<br/>Pessoa é controlada por ele."
 ```
@@ -93,6 +110,7 @@ Morador cujas finanças são controladas.
 | `CriadoEm` | Data de criação em UTC |
 | `Transacoes` | Coleção de transações; base da exclusão em cascata (RN05) |
 | `EhMenorDeIdade` | Encapsula a regra de maioridade (RN03) no domínio |
+| `Atualizar` | Edita nome e idade (RF18); não revalida transações já registradas (RN21) |
 
 ### Transacao
 Movimentação financeira vinculada a uma pessoa.
@@ -103,13 +121,21 @@ Movimentação financeira vinculada a uma pessoa.
 | `Descricao` | Obrigatória, até 200 caracteres (RN10) |
 | `Valor` | Decimal sempre positivo (RN06) |
 | `Tipo` | Despesa ou receita (RN04) |
+| `Data` | Data do fato, obrigatória e não futura (RN18) |
+| `Categoria` | Opcional, de domínio fechado (RN19) |
 | `PessoaId` / `Pessoa` | Chave estrangeira e navegação; a pessoa deve existir (RN02) |
 | `CriadoEm` | Data de criação em UTC |
+| `Atualizar` | Edita os dados da transação; a pessoa não muda (RF19) |
 
 O valor é sempre positivo: o sentido financeiro é determinado pelo tipo, nunca pelo sinal. Isso elimina ambiguidade no cálculo do saldo.
 
+`Data` e `CriadoEm` são campos distintos e ambos necessários: a primeira é a data do fato financeiro, informada pelo usuário e usada nos filtros por período; a segunda é o instante do registro, gerado pelo sistema. Uma despesa lançada com atraso tem as duas diferentes.
+
 ### TipoTransacao
 Enumeração de domínio fechado (RN04). Evita valores livres e garante consistência em tempo de compilação e no banco.
+
+### CategoriaTransacao
+Enumeração de domínio fechado (RN19), aplicada da mesma forma que `TipoTransacao`. É anulável: categorizar uma transação é opcional, e a ausência de categoria é agrupada como "Sem categoria" no resumo de despesas (RF23).
 
 ## 4. Decisões de modelagem
 
