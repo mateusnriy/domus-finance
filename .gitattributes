@@ -1,0 +1,18 @@
+# Normaliza fim de linha no repositório (LF), evitando diffs falsos
+* text=auto eol=lf
+
+# Scripts que exigem terminação específica
+*.sh   text eol=lf
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+
+# Binários — nunca normalizar
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.zip  binary
+*.woff binary
+*.woff2 binary

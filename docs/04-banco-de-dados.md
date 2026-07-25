@@ -1,4 +1,4 @@
-# 04 — Modelagem do Banco de Dados
+# 04 - Modelagem do Banco de Dados
 
 Banco: **PostgreSQL 16**. Mapeamento: **Entity Framework Core 8** com migrations.
 

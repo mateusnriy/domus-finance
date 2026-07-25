@@ -1,4 +1,4 @@
-# 03 — Diagrama de Classes de Domínio
+# 03 - Diagrama de Classes de Domínio
 
 ## 1. Diagrama
 
