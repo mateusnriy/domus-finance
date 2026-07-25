@@ -1,4 +1,4 @@
-# 01 — Escopo e Requisitos
+# 01 - Escopo e Requisitos
 
 ## 1. Visão geral
 

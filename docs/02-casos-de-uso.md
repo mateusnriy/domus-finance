@@ -1,4 +1,4 @@
-# 02 — Casos de Uso
+# 02 - Casos de Uso
 
 ## 1. Atores
 
