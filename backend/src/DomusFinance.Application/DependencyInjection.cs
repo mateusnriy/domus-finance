@@ -11,6 +11,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblyContaining<PessoaService>();
         services.AddScoped<PessoaService>();
         services.AddScoped<TransacaoService>();
+        services.AddScoped<TotaisService>();
 
         return services;
     }
