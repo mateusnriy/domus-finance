@@ -1,6 +1,6 @@
 namespace DomusFinance.Domain.Entidades;
 
-//Morador cujas finanças são controladas.
+// Morador cujas finanças são controladas.
 public class Pessoa
 {
     public const int IdadeMinimaMaioridade = 18;
