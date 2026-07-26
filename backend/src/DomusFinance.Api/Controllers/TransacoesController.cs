@@ -1,11 +1,13 @@
 using DomusFinance.Application.DTOs.Transacoes;
 using DomusFinance.Application.Servicos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DomusFinance.Api.Controllers;
 
 [ApiController]
 [Route("api/transacoes")]
+[Authorize]
 public class TransacoesController(TransacaoService servico) : ControllerBase
 {
     // Registra uma transação para uma pessoa existente.
