@@ -32,7 +32,7 @@ public class PessoaService(IAppDbContext db, IValidator<SalvarPessoaRequest> val
         return pessoas.Select(p => Mapear(p.Pessoa, p.Quantidade)).ToList();
     }
 
-    // Edita nome e idade de uma pessoa existente (RF18). 
+    // Edita nome e idade de uma pessoa existente (RF18).
     public async Task<PessoaResponse> EditarAsync(Guid id, SalvarPessoaRequest request, CancellationToken ct)
     {
         await validador.ValidateAndThrowAsync(request, ct);

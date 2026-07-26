@@ -10,7 +10,7 @@ namespace DomusFinance.Api.Controllers;
 [Authorize]
 public class PessoasController(PessoaService servico) : ControllerBase
 {
-    // Cadastra uma nova pessoa. 
+    // Cadastra uma nova pessoa.
     [HttpPost]
     public async Task<ActionResult<PessoaResponse>> Criar(SalvarPessoaRequest request, CancellationToken ct)
     {
@@ -18,17 +18,17 @@ public class PessoasController(PessoaService servico) : ControllerBase
         return Created($"/api/pessoas/{pessoa.Id}", pessoa);
     }
 
-    // Lista todas as pessoas, com a quantidade de transações de cada uma. 
+    // Lista todas as pessoas, com a quantidade de transações de cada uma.
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<PessoaResponse>>> Listar(CancellationToken ct)
         => Ok(await servico.ListarAsync(ct));
 
-    // Edita nome e idade de uma pessoa existente. 
+    // Edita nome e idade de uma pessoa existente.
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<PessoaResponse>> Editar(Guid id, SalvarPessoaRequest request, CancellationToken ct)
         => Ok(await servico.EditarAsync(id, request, ct));
 
-    // Exclui a pessoa e, em cascata, todas as suas transações. 
+    // Exclui a pessoa e, em cascata, todas as suas transações.
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Excluir(Guid id, CancellationToken ct)
     {
