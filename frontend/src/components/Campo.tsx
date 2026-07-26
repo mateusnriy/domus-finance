@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { forwardRef, useId } from 'react';
 import type { InputHTMLAttributes } from 'react';
 
 type CampoProps = {
@@ -7,14 +7,10 @@ type CampoProps = {
   mono?: boolean;
 } & InputHTMLAttributes<HTMLInputElement>;
 
-export default function Campo({
-  label,
-  erro,
-  mono = false,
-  id,
-  className = '',
-  ...props
-}: CampoProps) {
+const Campo = forwardRef<HTMLInputElement, CampoProps>(function Campo(
+  { label, erro, mono = false, id, className = '', ...props },
+  ref,
+) {
   const idGerado = useId();
   const idCampo = id ?? idGerado;
   const idErro = `${idCampo}-erro`;
@@ -26,6 +22,7 @@ export default function Campo({
       </label>
       <input
         {...props}
+        ref={ref}
         id={idCampo}
         aria-invalid={erro ? true : undefined}
         aria-describedby={erro ? idErro : undefined}
@@ -38,4 +35,6 @@ export default function Campo({
       )}
     </div>
   );
-}
+});
+
+export default Campo;
