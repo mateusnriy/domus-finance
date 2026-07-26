@@ -1,5 +1,7 @@
 using DomusFinance.Application.Persistencia;
+using DomusFinance.Application.Seguranca;
 using DomusFinance.Infrastructure.Persistencia;
+using DomusFinance.Infrastructure.Seguranca;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +16,9 @@ public static class DependencyInjection
             options.UseNpgsql(configuration.GetConnectionString("Default")));
 
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
+
+        services.AddSingleton<IHasherDeSenha, HasherDeSenhaBCrypt>();
+        services.AddSingleton<IGeradorDeToken, GeradorDeTokenJwt>();
 
         return services;
     }
