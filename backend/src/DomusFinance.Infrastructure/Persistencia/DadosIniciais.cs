@@ -1,3 +1,4 @@
+using DomusFinance.Application.Seguranca;
 using DomusFinance.Domain.Entidades;
 using DomusFinance.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +7,14 @@ namespace DomusFinance.Infrastructure.Persistencia;
 
 public static class DadosIniciais
 {
+    private const string EmailDemonstracao = "demo@domusfinance.local";
+    private const string SenhaDemonstracao = "Demo@1234";
+
     // Popula o banco apenas quando vazio, para não duplicar a cada reinício.
-    public static async Task AplicarAsync(AppDbContext contexto, CancellationToken ct = default)
+    public static async Task AplicarAsync(AppDbContext contexto, IHasherDeSenha hasher, CancellationToken ct = default)
     {
+        await AplicarUsuarioAsync(contexto, hasher, ct);
+
         if (await contexto.Pessoas.AnyAsync(ct))
             return;
 
@@ -28,6 +34,18 @@ public static class DadosIniciais
             new Transacao("Curso de inglês", 230.00m, TipoTransacao.Despesa, hoje.AddDays(-11), CategoriaTransacao.Educacao, diego.Id));
 
         // Carla permanece sem transações: os totais devem exibi-la zerada (RF06).
+        await contexto.SaveChangesAsync(ct);
+    }
+
+    // Conta de demonstração usada para exercitar a API pela documentação.
+    private static async Task AplicarUsuarioAsync(AppDbContext contexto, IHasherDeSenha hasher, CancellationToken ct)
+    {
+        if (await contexto.Usuarios.AnyAsync(ct))
+            return;
+
+        contexto.Usuarios.Add(new Usuario(
+            "Usuário de demonstração", EmailDemonstracao, hasher.GerarHash(SenhaDemonstracao)));
+
         await contexto.SaveChangesAsync(ct);
     }
 }
