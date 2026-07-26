@@ -10,7 +10,7 @@ export default function BotaoEditar({ rotulo, onClick }: BotaoEditarProps) {
       type="button"
       onClick={onClick}
       aria-label={rotulo}
-      className="px-2 text-divider transition-colors hover:text-ink focus-visible:text-ink"
+      className="inline-flex h-10 w-10 items-center justify-center text-hint transition-colors hover:text-ink focus-visible:text-ink"
     >
       <svg
         aria-hidden="true"

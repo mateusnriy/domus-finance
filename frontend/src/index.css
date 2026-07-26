@@ -12,7 +12,7 @@
   --color-panelactive: #f5f3ee;
   --color-card: #eceae2;
   --color-divider: #cccac2;
-  --color-hint: #6e6b62; /* escurecido vs. referência (#8A877F) p/ contraste AA em texto pequeno */
+  --color-hint: #6a675e; /* escurecido vs. referência (#8A877F): 5.10 sobre surface e 4.69 sobre card, AA em texto pequeno */
   --color-positive: #1a5c1a;
   --color-negative: #8b1f1f;
   --color-accent: #2b4a10;

@@ -25,7 +25,7 @@ export default function Botao({
       {...props}
       disabled={disabled || carregando}
       aria-busy={carregando || undefined}
-      className={`px-4 py-2.5 text-[10px] tracking-[0.2em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${VARIANTES[variante]} ${className}`}
+      className={`inline-flex min-h-10 items-center justify-center px-4 py-2.5 text-[10px] tracking-[0.2em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${VARIANTES[variante]} ${className}`}
     >
       {children}
     </button>
