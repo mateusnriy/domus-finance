@@ -20,5 +20,11 @@ export default tseslint.config(
       ecmaVersion: 2022,
       globals: globals.browser,
     },
+    rules: {
+      // A arquitetura do projeto (02-PADROES.md §3 e §7) manda buscar dados no
+      // Hook da feature ao montar, expondo carregando/erro, sem biblioteca de
+      // cache nem Suspense. A regra pressupõe justamente essas alternativas.
+      'react-hooks/set-state-in-effect': 'off',
+    },
   },
 );
