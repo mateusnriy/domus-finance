@@ -1,11 +1,13 @@
 using DomusFinance.Application.DTOs.Pessoas;
 using DomusFinance.Application.Servicos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DomusFinance.Api.Controllers;
 
 [ApiController]
 [Route("api/pessoas")]
+[Authorize]
 public class PessoasController(PessoaService servico) : ControllerBase
 {
     // Cadastra uma nova pessoa. 
