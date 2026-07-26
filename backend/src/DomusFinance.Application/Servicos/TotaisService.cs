@@ -14,6 +14,10 @@ public class TotaisService(IAppDbContext db)
     {
         // Projetado a partir de Pessoas, não de Transacoes: quem não tem
         // lançamento precisa aparecer zerado em vez de sumir do resultado.
+        //
+        // A soma é feita em memória, e não no banco: o provider do SQLite usado
+        // nos testes recusa agregação sobre decimal. Somar em C# roda igual nos
+        // dois bancos e mantém a aritmética decimal exata.
         var linhas = await db.Pessoas
             .OrderBy(p => p.Nome)
             .Select(p => new
@@ -21,29 +25,31 @@ public class TotaisService(IAppDbContext db)
                 p.Id,
                 p.Nome,
                 p.Idade,
-                // Cast para nullable: Sum em coleção vazia lançaria exceção.
-                Receitas = p.Transacoes.Where(t => t.Tipo == TipoTransacao.Receita).Sum(t => (decimal?)t.Valor) ?? 0m,
-                Despesas = p.Transacoes.Where(t => t.Tipo == TipoTransacao.Despesa).Sum(t => (decimal?)t.Valor) ?? 0m
+                Lancamentos = p.Transacoes.Select(t => new { t.Tipo, t.Valor }).ToList()
             })
             .ToListAsync(ct);
 
         var pessoas = linhas
-            .Select(l => new ResumoPessoaResponse(
-                l.Id, l.Nome, l.Idade, l.Receitas, l.Despesas, l.Receitas - l.Despesas))
+            .Select(l =>
+            {
+                var receitas = l.Lancamentos.Where(t => t.Tipo == TipoTransacao.Receita).Sum(t => t.Valor);
+                var despesas = l.Lancamentos.Where(t => t.Tipo == TipoTransacao.Despesa).Sum(t => t.Valor);
+                return new ResumoPessoaResponse(l.Id, l.Nome, l.Idade, receitas, despesas, receitas - despesas);
+            })
             .ToList();
 
         // RN08: o total geral é a soma das linhas, garantindo que as duas visões batam.
         var totalReceitas = pessoas.Sum(p => p.TotalReceitas);
         var totalDespesas = pessoas.Sum(p => p.TotalDespesas);
 
-        var agrupadas = await db.Transacoes
+        var despesas = await db.Transacoes
             .Where(t => t.Tipo == TipoTransacao.Despesa)
-            .GroupBy(t => t.Categoria)
-            .Select(g => new { Categoria = g.Key, Total = g.Sum(t => t.Valor) })
+            .Select(t => new { t.Categoria, t.Valor })
             .ToListAsync(ct);
 
-        var despesasPorCategoria = agrupadas
-            .Select(c => new ResumoCategoriaResponse(c.Categoria?.ToString() ?? SemCategoria, c.Total))
+        var despesasPorCategoria = despesas
+            .GroupBy(t => t.Categoria)
+            .Select(g => new ResumoCategoriaResponse(g.Key?.ToString() ?? SemCategoria, g.Sum(t => t.Valor)))
             .OrderByDescending(c => c.Total)
             .ToList();
 
