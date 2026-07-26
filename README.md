@@ -21,17 +21,28 @@ Para desenvolvimento local do backend, também é necessário o **.NET 8 SDK**.
 
 ## Execução
 
-### Banco de dados
+### Variáveis de ambiente
 
 ```bash
 cp .env.example .env
-docker compose up db
 ```
 
-O PostgreSQL sobe na porta definida por `DB_PORT` (padrão `5432`), com os dados
-persistidos no volume `pgdata`.
+Preencha o `.env` antes de subir os serviços. O template traz valores de exemplo,
+não credenciais funcionais: defina `POSTGRES_DB`, `POSTGRES_USER`,
+`POSTGRES_PASSWORD` e uma `JWT_CHAVE` de no mínimo 32 caracteres. O `.env` efetivo
+é ignorado pelo Git.
 
-### Build do backend
+### Serviços
+
+```bash
+docker compose up --build
+```
+
+A API responde em `http://localhost:8080` e a documentação fica em
+`http://localhost:8080/swagger`. O PostgreSQL sobe na porta definida por `DB_PORT`,
+com os dados persistidos no volume `pgdata`.
+
+### Build local do backend
 
 ```bash
 dotnet build backend/DomusFinance.sln
