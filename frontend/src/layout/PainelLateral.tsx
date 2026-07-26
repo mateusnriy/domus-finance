@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '@/auth/useAuth';
 
 const ITENS = [
   { para: '/totais', rotulo: 'Totais' },
@@ -10,6 +11,8 @@ const ITEM_BASE =
   'block rounded-[2px] px-3 py-2 text-[10px] tracking-[0.18em] uppercase transition-colors';
 
 export default function PainelLateral() {
+  const { sair } = useAuth();
+
   return (
     <aside className="bg-panel md:sticky md:top-0 md:h-screen md:w-[200px] md:shrink-0">
       <div className="flex items-center gap-2 px-3 py-2 md:h-full md:flex-col md:items-stretch md:gap-0 md:p-0">
@@ -42,9 +45,13 @@ export default function PainelLateral() {
         </nav>
 
         <div className="ml-auto md:ml-0 md:border-t md:border-white/10 md:p-3">
-          <NavLink to="/login" className={`${ITEM_BASE} text-paneltext hover:text-panelactive`}>
+          <button
+            type="button"
+            onClick={sair}
+            className={`${ITEM_BASE} w-full text-left text-paneltext hover:bg-white/5 hover:text-panelactive`}
+          >
             Sair
-          </NavLink>
+          </button>
         </div>
       </div>
     </aside>

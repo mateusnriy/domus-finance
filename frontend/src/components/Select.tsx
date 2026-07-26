@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { forwardRef, useId } from 'react';
 import type { SelectHTMLAttributes, ReactNode } from 'react';
 
 type SelectProps = {
@@ -7,14 +7,10 @@ type SelectProps = {
   children: ReactNode;
 } & SelectHTMLAttributes<HTMLSelectElement>;
 
-export default function Select({
-  label,
-  erro,
-  id,
-  className = '',
-  children,
-  ...props
-}: SelectProps) {
+const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
+  { label, erro, id, className = '', children, ...props },
+  ref,
+) {
   const idGerado = useId();
   const idCampo = id ?? idGerado;
   const idErro = `${idCampo}-erro`;
@@ -27,6 +23,7 @@ export default function Select({
       <div className="relative">
         <select
           {...props}
+          ref={ref}
           id={idCampo}
           aria-invalid={erro ? true : undefined}
           aria-describedby={erro ? idErro : undefined}
@@ -49,4 +46,6 @@ export default function Select({
       )}
     </div>
   );
-}
+});
+
+export default Select;
