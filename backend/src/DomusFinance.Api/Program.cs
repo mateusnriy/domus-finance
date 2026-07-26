@@ -50,6 +50,7 @@ static async Task AplicarMigrationsComRetryAsync(WebApplication app)
         try
         {
             await contexto.Database.MigrateAsync();
+            await DadosIniciais.AplicarAsync(contexto);
             return;
         }
         catch (Exception ex) when (tentativa < tentativas)
