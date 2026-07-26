@@ -1,14 +1,34 @@
 import { useState } from 'react';
+import type { KeyboardEvent } from 'react';
 import Cartao from '@/components/Cartao';
 import LoginForm from '@/features/auth/LoginForm';
 import RegistroForm from '@/features/auth/RegistroForm';
 
-type Aba = 'entrar' | 'registrar';
+const ABAS = [
+  { id: 'entrar', rotulo: 'Entrar' },
+  { id: 'registrar', rotulo: 'Registrar' },
+] as const;
+
+type Aba = (typeof ABAS)[number]['id'];
 
 const ABA_BASE = 'border-b-2 pb-2 text-[10px] tracking-[0.2em] uppercase transition-colors';
 
 export default function LoginPage() {
   const [aba, setAba] = useState<Aba>('entrar');
+
+  // Padrão de abas: setas percorrem a lista e movem o foco junto da seleção.
+  const aoTeclar = (evento: KeyboardEvent<HTMLButtonElement>) => {
+    if (evento.key !== 'ArrowRight' && evento.key !== 'ArrowLeft') return;
+
+    evento.preventDefault();
+
+    const atual = ABAS.findIndex((item) => item.id === aba);
+    const passo = evento.key === 'ArrowRight' ? 1 : -1;
+    const proxima = ABAS[(atual + passo + ABAS.length) % ABAS.length];
+
+    setAba(proxima.id);
+    document.getElementById(`aba-${proxima.id}`)?.focus();
+  };
 
   return (
     <main className="flex min-h-screen items-center justify-center px-4 py-10">
@@ -24,30 +44,34 @@ export default function LoginPage() {
         </div>
 
         <Cartao className="mt-8 p-8">
-          <div className="flex gap-6 border-b border-divider">
-            <button
-              type="button"
-              onClick={() => setAba('entrar')}
-              aria-current={aba === 'entrar' ? 'page' : undefined}
-              className={`${ABA_BASE} ${
-                aba === 'entrar' ? 'border-ink text-ink' : 'border-transparent text-hint'
-              }`}
-            >
-              Entrar
-            </button>
-            <button
-              type="button"
-              onClick={() => setAba('registrar')}
-              aria-current={aba === 'registrar' ? 'page' : undefined}
-              className={`${ABA_BASE} ${
-                aba === 'registrar' ? 'border-ink text-ink' : 'border-transparent text-hint'
-              }`}
-            >
-              Registrar
-            </button>
+          <div
+            role="tablist"
+            aria-label="Autenticação"
+            className="flex gap-6 border-b border-divider"
+          >
+            {ABAS.map((item) => (
+              <button
+                key={item.id}
+                id={`aba-${item.id}`}
+                type="button"
+                role="tab"
+                aria-selected={aba === item.id}
+                aria-controls={`painel-${item.id}`}
+                tabIndex={aba === item.id ? 0 : -1}
+                onClick={() => setAba(item.id)}
+                onKeyDown={aoTeclar}
+                className={`${ABA_BASE} ${
+                  aba === item.id ? 'border-ink text-ink' : 'border-transparent text-hint'
+                }`}
+              >
+                {item.rotulo}
+              </button>
+            ))}
           </div>
 
-          {aba === 'entrar' ? <LoginForm /> : <RegistroForm />}
+          <div role="tabpanel" id={`painel-${aba}`} aria-labelledby={`aba-${aba}`}>
+            {aba === 'entrar' ? <LoginForm /> : <RegistroForm />}
+          </div>
         </Cartao>
 
         <p className="mt-6 text-center text-xs text-hint">
