@@ -30,5 +30,15 @@ services:
     ports:
       - "${API_PORT:-8080}:8080"
 
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: "${VITE_API_URL:-http://localhost:8080/api}"
+    depends_on:
+      - api
+    ports:
+      - "${WEB_PORT:-5173}:80"
+
 volumes:
   pgdata:

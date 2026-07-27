@@ -1,23 +1,34 @@
 # Domus Finance
 
-Sistema de controle de gastos residenciais. API REST para cadastro de pessoas,
-registro de suas transações financeiras (receitas e despesas) e consolidação de
-totais, com acesso autenticado.
+Sistema de controle de gastos residenciais. Cadastro de pessoas, registro de suas
+transações financeiras (receitas e despesas) e consolidação de totais por pessoa
+e da casa, com acesso autenticado — API REST e cliente web.
 
 ## Stack
 
-- **Backend:** .NET 8 (ASP.NET Core Web API), C#
-- **Persistência:** PostgreSQL 16, Entity Framework Core 8
-- **Validação:** FluentValidation
-- **Autenticação:** JWT Bearer, senhas com BCrypt
-- **Testes:** xUnit, FluentAssertions, SQLite em memória
-- **Infraestrutura:** Docker e Docker Compose
+**Backend**
+
+- .NET 8 (ASP.NET Core Web API), C#
+- PostgreSQL 16, Entity Framework Core 8
+- FluentValidation
+- JWT Bearer, senhas com BCrypt
+- Testes: xUnit, FluentAssertions, SQLite em memória
+
+**Frontend**
+
+- React 18, TypeScript, Vite
+- Tailwind CSS v4, React Hook Form, axios
+- Testes: Vitest, Testing Library, axe-core
+- Nginx para servir os arquivos estáticos
+
+**Infraestrutura:** Docker e Docker Compose.
 
 ## Pré-requisitos
 
 Apenas **Docker** e **Docker Compose**.
 
-Para desenvolvimento local fora do container, também o **.NET 8 SDK**.
+Para desenvolvimento local fora do container, também o **.NET 8 SDK** e o
+**Node 22**.
 
 ## Execução
 
@@ -35,9 +46,12 @@ executar com assinatura enfraquecida. O `.env` efetivo é ignorado pelo Git.
 docker compose up --build
 ```
 
-Um comando sobe banco e API. As migrations são aplicadas na inicialização, com
-nova tentativa enquanto o banco não aceita conexões, e os dados de demonstração
-são inseridos quando o banco está vazio.
+Um comando sobe banco, API e cliente. As migrations são aplicadas na
+inicialização, com nova tentativa enquanto o banco não aceita conexões, e os
+dados de demonstração são inseridos quando o banco está vazio.
+
+Ao trocar as portas padrão, ajuste também `FRONTEND_ORIGIN` (origem liberada no
+CORS da API) e `VITE_API_URL` (base da API gravada no bundle do cliente).
 
 ## Credenciais de demonstração
 
@@ -50,13 +64,14 @@ são inseridos quando o banco está vazio.
 
 | Recurso | Endereço |
 |---------|----------|
+| Cliente web | http://localhost:5173 |
 | Documentação da API | http://localhost:8080/swagger |
 | API | http://localhost:8080/api |
 | Verificação de saúde | http://localhost:8080/health |
 
-Na documentação, autentique em `POST /api/auth/login`, copie o `token` da
-resposta e informe-o no botão **Authorize**. Os endpoints de negócio respondem
-401 sem token.
+No cliente, entre com as credenciais acima. Na documentação da API, autentique em
+`POST /api/auth/login`, copie o `token` da resposta e informe-o no botão
+**Authorize**. Os endpoints de negócio respondem 401 sem token.
 
 ## Estrutura do repositório
 
@@ -65,32 +80,45 @@ domus-finance/
 ├── docker-compose.yml      # orquestração dos serviços
 ├── .env.example            # template de variáveis de ambiente
 ├── docs/                   # documentação de engenharia
-└── backend/
-    ├── DomusFinance.sln
+├── backend/
+│   ├── DomusFinance.sln
+│   ├── Dockerfile
+│   ├── src/
+│   │   ├── DomusFinance.Domain/          # entidades e regras invariantes
+│   │   ├── DomusFinance.Application/     # serviços, DTOs, validações
+│   │   ├── DomusFinance.Infrastructure/  # EF Core, mapeamentos, segurança
+│   │   └── DomusFinance.Api/             # controllers e configuração
+│   └── tests/
+│       └── DomusFinance.Tests/
+└── frontend/
     ├── Dockerfile
-    ├── src/
-    │   ├── DomusFinance.Domain/          # entidades e regras invariantes
-    │   ├── DomusFinance.Application/     # serviços, DTOs, validações
-    │   ├── DomusFinance.Infrastructure/  # EF Core, mapeamentos, segurança
-    │   └── DomusFinance.Api/             # controllers e configuração
-    └── tests/
-        └── DomusFinance.Tests/
+    ├── nginx.conf
+    └── src/
+        ├── components/     # design system
+        ├── layout/         # painel lateral e cabeçalho de tela
+        ├── features/       # auth, pessoas, transacoes, totais
+        ├── lib/            # cliente HTTP, formatação, tradução de erros
+        └── testes/
 ```
 
 ## Testes
 
 ```bash
-dotnet test backend/DomusFinance.sln
+dotnet test backend/DomusFinance.sln     # 44 testes
+npm --prefix frontend test               # 44 testes
 ```
 
-Os testes usam SQLite em memória e **não exigem Docker**. A escolha é
+Os testes do backend usam SQLite em memória e **não exigem Docker**. A escolha é
 deliberada: por ser relacional, cascata e restrições de integridade valem de
 verdade, o que um provedor em memória puro não garantiria.
 
+Os testes do frontend consultam a interface por papel, rótulo e texto — como o
+usuário a encontra —, e a rede é mockada na camada de serviço.
+
 ## Documentação de engenharia
 
-O detalhamento de escopo, casos de uso, modelo de domínio, banco de dados e
-arquitetura está em [`docs/`](./docs/).
+O detalhamento de escopo, casos de uso, modelo de domínio, banco de dados,
+arquitetura e o guia visual está em [`docs/`](./docs/).
 
 ## Decisões técnicas
 
@@ -100,7 +128,8 @@ regra verificável pelo compilador: `DomusFinance.Domain` não referencia nenhum
 outro projeto.
 
 **Regras de negócio no servidor.** A API está correta quando chamada
-diretamente, sem cliente. Nenhuma regra depende de validação no navegador.
+diretamente, sem cliente. Nenhuma regra depende de validação no navegador; o
+cliente espelha as regras apenas para dar retorno imediato.
 
 **Integridade reforçada no banco.** Cada regra verificável em dados existe
 também como restrição: idade entre 0 e 130, valor maior que zero, tipo e
@@ -113,6 +142,16 @@ positivo; o sentido financeiro vem do tipo, o que elimina ambiguidade no saldo.
 **Data do fato separada da data de registro.** `data` é informada pelo usuário e
 alimenta os filtros por período; `criado_em` é o instante do registro. Uma
 despesa lançada com atraso tem as duas diferentes.
+
+**Frontend sem biblioteca de UI nem de estado global.** O design system é
+próprio, e o único estado compartilhado é a sessão. Cada tela busca seus dados
+pelo Hook da sua feature e recarrega pela API após cada alteração, em vez de
+deduzir o resultado localmente.
+
+**Base da API fixada em tempo de build no cliente.** Arquivo estático servido por
+Nginx não lê variável de ambiente em execução, então `VITE_API_URL` entra como
+argumento de build e o Nginx trata o restante como SPA, devolvendo o `index.html`
+para as rotas do React Router.
 
 ## Além do escopo mínimo
 
@@ -127,5 +166,9 @@ despesa lançada com atraso tem as duas diferentes.
   cinco minutos que faria o token sobreviver além do prazo declarado
 - **Falha na inicialização** com mensagem clara quando o segredo de assinatura
   está ausente ou tem menos de 32 caracteres
-- **44 testes automatizados** cobrindo as regras de negócio, incluindo a
-  exclusão em cascata verificada no banco e a precisão decimal em somas
+- **Acessibilidade tratada como requisito:** navegação completa por teclado,
+  gestão de foco no modal, campos associados a rótulo e erro, e auditoria
+  automática com axe sobre as quatro telas
+- **88 testes automatizados** — 44 no backend, cobrindo as regras de negócio,
+  a exclusão em cascata verificada no banco e a precisão decimal em somas; 44 no
+  frontend, cobrindo as regras espelhadas no cliente e os estados de cada tela

@@ -29,8 +29,30 @@ export const TRANSACOES: Transacao[] = [
     pessoaId: '1',
     pessoaNome: 'Ana Souza',
   },
+  {
+    id: '3',
+    descricao: 'Material escolar',
+    valor: 230,
+    tipo: 'Despesa',
+    data: '2026-07-20',
+    categoria: 'Educacao',
+    pessoaId: '2',
+    pessoaNome: 'Bruno Lima',
+  },
+  {
+    id: '4',
+    descricao: 'Feira livre',
+    valor: 150,
+    tipo: 'Despesa',
+    data: '2026-07-18',
+    categoria: null,
+    pessoaId: '1',
+    pessoaNome: 'Ana Souza',
+  },
 ];
 
+// Consolidação correspondente a TRANSACOES: os totais por pessoa, o total geral
+// e a soma por categoria fecham entre si, como no retorno real da API.
 export const RESUMO: ResumoGeral = {
   pessoas: [
     {
@@ -38,8 +60,8 @@ export const RESUMO: ResumoGeral = {
       nome: 'Ana Souza',
       idade: 34,
       totalReceitas: 4500,
-      totalDespesas: 820.5,
-      saldo: 3679.5,
+      totalDespesas: 970.5,
+      saldo: 3529.5,
     },
     {
       pessoaId: '2',
@@ -59,10 +81,11 @@ export const RESUMO: ResumoGeral = {
     },
   ],
   totalReceitas: 4500,
-  totalDespesas: 1050.5,
-  saldoLiquido: 3449.5,
+  totalDespesas: 1200.5,
+  saldoLiquido: 3299.5,
   despesasPorCategoria: [
     { categoria: 'Alimentacao', total: 820.5 },
     { categoria: 'Educacao', total: 230 },
+    { categoria: 'Sem categoria', total: 150 },
   ],
 };
