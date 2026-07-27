@@ -182,6 +182,14 @@ describe('transações', () => {
     expect(screen.queryByText('Salário')).not.toBeInTheDocument();
   });
 
+  it('mostra o estado de carregamento antes de os dados chegarem', async () => {
+    renderizarTela(<TransacoesPage />);
+
+    expect(screen.getByRole('status')).toHaveTextContent('Carregando');
+
+    await screen.findByText('Supermercado');
+  });
+
   it('mostra o estado vazio quando o filtro não encontra nada', async () => {
     await renderizarComLista();
 

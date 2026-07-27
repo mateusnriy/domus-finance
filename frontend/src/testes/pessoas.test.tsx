@@ -59,6 +59,14 @@ describe('pessoas', () => {
     expect(criar).not.toHaveBeenCalled();
   });
 
+  it('mostra o estado de carregamento antes de os dados chegarem', async () => {
+    renderizarTela(<PessoasPage />);
+
+    expect(screen.getByRole('status')).toHaveTextContent('Carregando');
+
+    await screen.findByText('Ana Souza');
+  });
+
   it('mostra o estado vazio quando não há pessoas', async () => {
     listar.mockResolvedValueOnce([]);
 

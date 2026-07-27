@@ -82,6 +82,14 @@ describe('totais', () => {
     ]);
   });
 
+  it('mostra o estado de carregamento antes de os dados chegarem', async () => {
+    renderizarTela(<TotaisPage />);
+
+    expect(screen.getByRole('status')).toHaveTextContent('Carregando');
+
+    await screen.findByText('Ana Souza');
+  });
+
   it('mostra o estado vazio quando não há pessoas cadastradas', async () => {
     obter.mockResolvedValueOnce({
       pessoas: [],
