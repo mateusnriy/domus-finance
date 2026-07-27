@@ -13,6 +13,7 @@ Sistema de controle de gastos residenciais.
 | 04 | [Banco de Dados](./04-banco-de-dados.md) | MER, modelo lógico e modelo físico |
 | 05 | [Arquitetura](./05-arquitetura.md) | Camadas, decisões técnicas e segurança |
 | 06 | [Design Brief](./06-design-brief.md) | Direção visual, tokens e guia de wireframes |
+| 07 | [Uso de IA](./07-uso-de-ia.md) | Onde a IA apoiou o desenvolvimento e sob qual revisão |
 
 ## Sobre o sistema
 
