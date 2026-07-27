@@ -6,11 +6,13 @@ Sistema de controle de gastos residenciais.
 
 | # | Documento | Conteúdo |
 |---|-----------|----------|
+| 00 | [Visão Geral](./00-visao-geral.md) | O que é o sistema, propósito e objetivos |
 | 01 | [Escopo e Requisitos](./01-escopo-e-requisitos.md) | Visão geral, requisitos funcionais e não funcionais, regras de negócio |
 | 02 | [Casos de Uso](./02-casos-de-uso.md) | Atores, diagrama e especificação dos casos de uso |
 | 03 | [Diagrama de Classes](./03-diagrama-de-classes.md) | Modelo de classes do domínio |
 | 04 | [Banco de Dados](./04-banco-de-dados.md) | MER, modelo lógico e modelo físico |
 | 05 | [Arquitetura](./05-arquitetura.md) | Camadas, decisões técnicas e segurança |
+| 06 | [Design Brief](./06-design-brief.md) | Direção visual, tokens e guia de wireframes |
 
 ## Sobre o sistema
 
